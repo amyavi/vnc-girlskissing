@@ -12,7 +12,7 @@ set(HEADERS src/vnc.h)
 set(SOURCES src/vnc.c src/main.c)
 add_executable(${CMAKE_PROJECT_NAME} ${HEADERS} ${SOURCES})
 
-target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter -fno-exceptions)
+target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter)
 set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 set(CMAKE_C_FLAGS_RELEASE "-Ofast -s")
 set(CMAKE_CXX_FLAGS_RELEASE "-Ofast -s")

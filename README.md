@@ -12,7 +12,7 @@ instructions:
 just add `-DBUILD_STATIC=1` to your cmake parameters
 
 note that you will have to go through the hell that is building `libvncserver` statically,
-if you're not too sure how to do that, look the dockerfile
+if you're not too sure how to do that, look at the dockerfile
 
 ## running (docker)
 1. put your image in `./image.png`

@@ -91,9 +91,9 @@ rfbScreenInfoPtr vncNewServer(int port, const char* name) {
     server->protocolMajorVersion = rfbProtocolMajorVersion;
     server->protocolMinorVersion = rfbProtocolMinorVersion;
 
-    server->deferUpdateTime = 5;
+    server->deferUpdateTime = 50;
     server->maxRectsPerUpdate = 50;
-    server->fdQuota = 0.5;  // TODO: check this
+    server->fdQuota = 1.0;
     server->authPasswdFirstViewOnly = 1;
 
     server->socketState = RFB_SOCKET_INIT;
@@ -105,7 +105,6 @@ rfbScreenInfoPtr vncNewServer(int port, const char* name) {
     server->httpListen6Sock = RFB_INVALID_SOCKET;
     server->httpSock = RFB_INVALID_SOCKET;
 
-    server->ignoreSIGPIPE = TRUE;
 #ifdef LIBVNCSERVER_HAVE_LIBPTHREAD
     server->pipe_notify_listener_thread[0] = -1;
     server->pipe_notify_listener_thread[1] = -1;

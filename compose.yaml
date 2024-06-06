@@ -1,6 +1,6 @@
 services:
   vnc-girlskissing:
-    image: ghcr.io/amyavi/vnc-girlskissing
+    build: .
     cap_drop: [ ALL ]
     init: true
     read_only: true

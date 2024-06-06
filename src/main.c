@@ -40,9 +40,11 @@ rfbScreenInfoPtr newImageVNC(int port, const char* name, image img) {
 
 int main(int argc, char* argv[]) {
     image image = {0};
-    const char* err = loadImage(&image, argc >= 2 ? argv[1] : "image.png");
+
+    const char* imagePath = argc >= 2 ? argv[1] : "image.png";
+    const char* err = loadImage(&image, imagePath);
     if (err != NULL) {
-        fprintf(stderr, "loading %s: %s\n", argc >= 2 ? argv[1] : "image.png", err);
+        fprintf(stderr, "loading %s: %s\n", imagePath, err);
         return EXIT_FAILURE;
     }
 

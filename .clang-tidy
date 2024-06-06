@@ -1,0 +1,4 @@
+Checks: 'bugprone-*,-bugprone-easily-swappable-parameters,modernize-*,performance-*,readability-*,-readability-braces-around-statements,-readability-identifier-length,-modernize-use-trailing-return-type'
+WarningsAsErrors: true
+FormatStyle: Google
+IgnorePowersOf2IntegerValues: true

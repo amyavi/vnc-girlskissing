@@ -1,0 +1,12 @@
+services:
+  vnc:
+    build: .
+    cap_drop: [ ALL ]
+    init: true
+    read_only: true
+    restart: unless-stopped
+
+    command: '"amyavi/vnc-girlskissing (docker)"'
+    volumes: [ ./image.png:/image.png:ro ]
+
+    ports: [ 5900-5910:5900-5910/tcp ]

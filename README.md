@@ -28,7 +28,7 @@ services:
     command: '"amyavi/vnc-girlskissing (docker)"'
     volumes: [ ./image.png:/image.png:ro ]
 
-    ports: [ 5900-5910:5900-5910/tcp ]
+    ports: [ '5900:5900/tcp' ]
 ```
 
 1. put your image in `./image.png`

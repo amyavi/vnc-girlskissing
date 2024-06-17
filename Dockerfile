@@ -42,5 +42,6 @@ FROM scratch
 COPY --from=builder /src/app/build/vnc-girlskissing /vnc-girlskissing
 
 USER 1000:1000
+EXPOSE 5900
 
 ENTRYPOINT ["/vnc-girlskissing", "/image.png"]

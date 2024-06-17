@@ -6,7 +6,15 @@
 // Event handling
 static rfbBool vncCheckPassword(rfbClientPtr client, const char* response, int len) { return TRUE; }  // looks good to me buddy
 
-static inline enum rfbNewClientAction vncOnNewClient(rfbClientPtr client) {
+static void vncOnClientGone(rfbClientPtr client) {
+    printf("Client %s disconnected\n", client->host);
+    fflush(stdout);
+}
+
+static enum rfbNewClientAction vncOnNewClient(rfbClientPtr client) {
+    client->clientGoneHook = vncOnClientGone;
+    printf("Client %s connected\n", client->host);
+    fflush(stdout);
     return RFB_CLIENT_ACCEPT;
 }
 
@@ -110,6 +118,8 @@ rfbScreenInfoPtr vncNewServer(int port, const char* name) {
     server->pipe_notify_listener_thread[1] = -1;
 #endif
 
+    rfbClientListInit(server);
+
     // Yes, we do need this mutex, even if there is no cursor
     INIT_MUTEX(server->cursorMutex);
 
@@ -130,7 +140,6 @@ rfbScreenInfoPtr vncNewServer(int port, const char* name) {
     server->numberOfExtDesktopScreensHook = vncGetScreenNum;
     server->getExtDesktopScreenHook = vncGetScreen;
 
-    rfbClientListInit(server);
     return server;
 }
 

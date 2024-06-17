@@ -5,8 +5,6 @@
 
 #include "vnc.h"
 
-#define SERVER_COUNT 11
-
 typedef struct {
     unsigned int width, height;
     unsigned char* data;
@@ -25,10 +23,7 @@ const char* loadImage(image* out, const char* filename) {
 
 rfbScreenInfoPtr newImageVNC(int port, const char* name, image img) {
     rfbScreenInfoPtr server = vncNewServer(port, name);
-    if (!server) {
-        fprintf(stderr, "allocating vnc server on port %d: out of memory\n", port);
-        return NULL;
-    }
+    if (!server) return NULL;
 
     vncChangeResolution(server, img.width, img.height, 8, 4, 4);
     server->frameBuffer = (char*)img.data;
@@ -51,28 +46,19 @@ int main(int argc, char* argv[]) {
     const char* vncName = argc >= 3 ? argv[2] : "amyavi/vnc-girlskissing";
 
     rfbLogEnable(0);
-    rfbScreenInfoPtr servers[SERVER_COUNT] = {0};
-    for (int i = 0; i < SERVER_COUNT; i++) {
-        servers[i] = newImageVNC(5900 + i, vncName, image);
-        if (servers[i] == NULL) {
-            fprintf(stderr, "allocating vnc server %d: out of memory\n", i + 1);
-            return EXIT_FAILURE;
-        }
+    rfbScreenInfoPtr server = newImageVNC(5900, vncName, image);
+    if (!server) {
+        fprintf(stderr, "allocating vnc server: out of memory\n");
+        return EXIT_FAILURE;
     }
 
-    printf("all VNC instances listening!\n");
+    printf("VNC server listening!\n");
 
     signal(SIGINT, onSIGINT);
     while (running) pause();
 
-    for (int i = 0; i < SERVER_COUNT; i++) {
-        rfbScreenInfoPtr server = servers[i];
-        if (!server) continue;
-
-        vncCloseServer(server);
-        free(server);
-    }
-
+    vncCloseServer(server);
+    free(server);
     free(image.data);
 
     return 0;

@@ -1,6 +1,12 @@
 # vnc-girlskissing
 static image vnc server
 
+## fetching
+please make sure to clone this repo with submodules:
+`git clone --recurse-submodules https://github.com/amyavi/vnc-girlskissing.git`
+
+or run `git submodule update --init --recursive`
+
 ## building
 requires `libvncserver`
 

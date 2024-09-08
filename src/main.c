@@ -11,7 +11,7 @@ typedef struct {
 } image;
 
 static volatile sig_atomic_t running = 1;
-static void onSIGINT(int unused) {
+static void onShutdown(int unused) {
     (void)unused;
     running = 0;
 }
@@ -54,7 +54,8 @@ int main(int argc, char* argv[]) {
 
     printf("VNC server listening!\n");
 
-    signal(SIGINT, onSIGINT);
+    signal(SIGINT, onShutdown);
+    signal(SIGTERM, onShutdown);
     while (running) pause();
 
     vncCloseServer(server);

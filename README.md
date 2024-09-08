@@ -24,10 +24,9 @@ if you're not too sure how to do that, look at the dockerfile
 here's an example compose.yaml:
 ```yml
 services:
-  vnc-girlskissing:
+  vnc:
     image: ghcr.io/amyavi/vnc-girlskissing
     cap_drop: [ ALL ]
-    init: true
     read_only: true
     restart: unless-stopped
 

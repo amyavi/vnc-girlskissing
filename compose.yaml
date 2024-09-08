@@ -1,8 +1,7 @@
 services:
-  vnc-girlskissing:
+  vnc:
     build: .
     cap_drop: [ ALL ]
-    init: true
     read_only: true
     restart: unless-stopped
 

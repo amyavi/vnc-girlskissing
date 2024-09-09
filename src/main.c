@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 
-    const char* vncName = argc >= 3 ? argv[2] : "amyavi/vnc-girlskissing";
+    const char* vncName = argc >= 3 ? argv[2] : PROJECT_NAME;
 
     rfbLogEnable(0);
     rfbScreenInfoPtr server = newImageVNC(5900, vncName, image);

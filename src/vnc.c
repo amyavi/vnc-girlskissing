@@ -93,6 +93,7 @@ rfbScreenInfoPtr vncNewServer(int port, const char* name) {
 
     server->alwaysShared = TRUE;
     server->desktopName = name;
+    server->versionString = (char*)name;
     server->listenInterface = htonl(INADDR_ANY);
     server->port = port;
     server->ipv6port = port;

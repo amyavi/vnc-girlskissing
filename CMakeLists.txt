@@ -10,6 +10,7 @@ endif()
 
 set(HEADERS src/vnc.h)
 set(SOURCES src/vnc.c src/main.c)
+add_compile_definitions(PROJECT_NAME="amyavi/vnc-girlskissing")
 add_executable(${CMAKE_PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter)

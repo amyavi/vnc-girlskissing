@@ -1,7 +1,10 @@
 #include "vnc.h"
 
+#include <ctype.h>
 #include <rfb/rfb.h>
 #include <rfb/rfbproto.h>
+
+#define MAX_CLIPBOARD_SIZE 4096
 
 // Event handling
 static rfbBool vncCheckPassword(rfbClientPtr client, const char* response, int len) { return TRUE; }  // looks good to me buddy
@@ -40,7 +43,26 @@ static inline rfbBool vncGetScreen(int seq, rfbExtDesktopScreen* screen, rfbClie
 // Keyboard
 static inline void vncOnKeyPress(rfbBool down, rfbKeySym keySym, rfbClientPtr client) {}
 static inline void vncOnKeyReleaseAll(rfbClientPtr client) {}
-static inline void vncOnSetClipboard(char* str, int len, rfbClientPtr client) {}
+static inline void vncOnSetClipboard(char* str, int len, rfbClientPtr client) {
+    if (len > MAX_CLIPBOARD_SIZE) return;
+    char buf[MAX_CLIPBOARD_SIZE + 1] = {0};
+
+    int print_len = 0;
+    for (int i = 0; i < len; i++) {
+        const char c = str[i];
+        if (c == 0) continue;
+
+        buf[print_len] = isprint(c) ? c : '?';
+        print_len++;
+    }
+
+    if (print_len == 0) return;
+    buf[print_len] = '\n';
+
+    printf("Client %s set clipboard: ", client->host);
+    fwrite(buf, print_len + 1, 1, stdout);
+    fflush(stdout);
+}
 
 // Mouse
 static inline void vncOnMouseMove(int buttonMask, int x, int y, rfbClientPtr client) {}
@@ -103,7 +125,6 @@ rfbScreenInfoPtr vncNewServer(int port, const char* name) {
     server->deferUpdateTime = 50;
     server->maxRectsPerUpdate = 50;
     server->fdQuota = 1.0;
-    server->authPasswdFirstViewOnly = 1;
 
     server->socketState = RFB_SOCKET_INIT;
     server->listenSock = RFB_INVALID_SOCKET;

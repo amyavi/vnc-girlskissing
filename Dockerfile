@@ -17,7 +17,7 @@ RUN git clone https://github.com/LibVNC/libvncserver.git /src/libvncserver && \
         -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib \
         -DBUILD_SHARED_LIBS=OFF \
         \
-        -DWITH_ZLIB=ON -DZLIB_LIBRARY_RELEASE=/lib/libz.a \
+        -DWITH_ZLIB=ON -DZLIB_LIBRARY_RELEASE=/usr/lib/libz.a \
         -DWITH_JPEG=ON -DJPEG_LIBRARY_RELEASE=/usr/lib/libjpeg.a \
         -DWITH_PNG=ON -DPNG_LIBRARY_RELEASE=/usr/lib/libpng.a \
         -DWITH_THREADS=ON \

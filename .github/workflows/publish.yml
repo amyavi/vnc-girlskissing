@@ -43,7 +43,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Generate artifact attestation
-        uses: https://github.com/actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v2
         with:
           subject-name: ${{ github.server_url }}/${{ github.repository }}
           subject-digest: ${{ steps.push.outputs.digest }}

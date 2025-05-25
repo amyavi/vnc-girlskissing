@@ -42,7 +42,6 @@ static inline rfbBool vncGetScreen(int seq, rfbExtDesktopScreen* screen, rfbClie
 
 // Keyboard
 static inline void vncOnKeyPress(rfbBool down, rfbKeySym keySym, rfbClientPtr client) {}
-static inline void vncOnKeyReleaseAll(rfbClientPtr client) {}
 static inline void vncOnSetClipboard(char* str, int len, rfbClientPtr client) {
     if (len > MAX_CLIPBOARD_SIZE) return;
     char buf[MAX_CLIPBOARD_SIZE + 1] = {0};
@@ -68,54 +67,12 @@ static inline void vncOnSetClipboard(char* str, int len, rfbClientPtr client) {
 static inline void vncOnMouseMove(int buttonMask, int x, int y, rfbClientPtr client) {}
 static inline rfbCursorPtr vncGetCursor(rfbClientPtr client) { return NULL; }
 
-// libvncserver/src/libvncserver/main.c
-static inline void vncInitServerFormat(rfbScreenInfoPtr server, int bitsPerChannel) {
-    rfbPixelFormat* format = &server->serverFormat;
-
-    format->bitsPerPixel = server->bitsPerPixel;
-    format->depth = server->depth;
-    format->bigEndian = rfbEndianTest ? FALSE : TRUE;
-    format->trueColour = TRUE;
-    server->colourMap.count = 0;
-    server->colourMap.is16 = 0;
-    server->colourMap.data.bytes = NULL;
-
-    if (format->bitsPerPixel == 8) {
-        format->redMax = 7;
-        format->greenMax = 7;
-        format->blueMax = 3;
-        format->redShift = 0;
-        format->greenShift = 3;
-        format->blueShift = 6;
-    } else {
-        format->redMax = (1 << bitsPerChannel) - 1;
-        format->greenMax = (1 << bitsPerChannel) - 1;
-        format->blueMax = (1 << bitsPerChannel) - 1;
-        if (rfbEndianTest) {
-            format->redShift = 0;
-            format->greenShift = bitsPerChannel;
-            format->blueShift = bitsPerChannel * 2;
-        } else {
-            if (format->bitsPerPixel == 8 * 3) {
-                format->redShift = bitsPerChannel * 2;
-                format->greenShift = bitsPerChannel * 1;
-                format->blueShift = 0;
-            } else {
-                format->redShift = bitsPerChannel * 3;
-                format->greenShift = bitsPerChannel * 2;
-                format->blueShift = bitsPerChannel;
-            }
-        }
-    }
-}
-
 rfbScreenInfoPtr vncNewServer(int port, const char* name) {
     rfbScreenInfoPtr server = calloc(1, sizeof(rfbScreenInfo));
     if (!server) return NULL;
 
     server->alwaysShared = TRUE;
     server->desktopName = name;
-    server->versionString = (char*)name;
     server->listenInterface = htonl(INADDR_ANY);
     server->port = port;
     server->ipv6port = port;
@@ -124,7 +81,7 @@ rfbScreenInfoPtr vncNewServer(int port, const char* name) {
 
     server->deferUpdateTime = 50;
     server->maxRectsPerUpdate = 50;
-    server->fdQuota = 1.0;
+    server->fdQuota = 0.9;
 
     server->socketState = RFB_SOCKET_INIT;
     server->listenSock = RFB_INVALID_SOCKET;
@@ -147,7 +104,7 @@ rfbScreenInfoPtr vncNewServer(int port, const char* name) {
 
     server->passwordCheck = vncCheckPassword;
     server->kbdAddEvent = vncOnKeyPress;
-    server->kbdReleaseAllKeys = vncOnKeyReleaseAll;
+    server->kbdReleaseAllKeys = rfbDoNothingWithClient;
     server->ptrAddEvent = vncOnMouseMove;
     server->setXCutText = vncOnSetClipboard;
 #ifdef LIBVNCSERVER_HAVE_LIBZ
@@ -166,11 +123,7 @@ rfbScreenInfoPtr vncNewServer(int port, const char* name) {
 }
 
 void vncChangeResolution(rfbScreenInfoPtr server, int width, int height, int bitsPerChannel, int channels, int bytesPerPixel) {
-    server->width = width;
-    server->height = height;
-    server->bitsPerPixel = server->depth = 8 * bytesPerPixel;
-    server->paddedWidthInBytes = width * bytesPerPixel;
-    vncInitServerFormat(server, bitsPerChannel);
+    rfbNewFramebuffer(server, server->frameBuffer, width, height, bitsPerChannel, channels, bytesPerPixel);
 }
 
 void vncCloseServer(rfbScreenInfoPtr server) {

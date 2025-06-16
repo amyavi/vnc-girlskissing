@@ -6,6 +6,7 @@ RUN apk add --no-cache \
     libpng-dev libpng-static \
     zlib-dev zlib-static
 
+ARG BUILD_TYPE=Release
 ARG BUID=1000
 ARG BGID=1000
 
@@ -13,7 +14,7 @@ ARG BGID=1000
 USER "${BUID}:${BGID}"
 WORKDIR /src/libvncserver 
 RUN git clone https://github.com/LibVNC/libvncserver.git /src/libvncserver && \
-    cmake -B build -DCMAKE_BUILD_TYPE=Release \
+    cmake -B build -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" \
         -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib \
         -DBUILD_SHARED_LIBS=OFF \
         \
@@ -37,7 +38,7 @@ USER "${BUID}:${BGID}"
 WORKDIR /src/app
 COPY . .
 
-RUN cmake -B build -DCMAKE_BUILD_TYPE=Release \
+RUN cmake -B build -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" \
         -DBUILD_STATIC=ON && \
     cmake --build build --verbose -j$(nproc)
 

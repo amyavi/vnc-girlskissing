@@ -1,6 +1,6 @@
 services:
   vnc:
-    build: .
+    build: { context: ., args: [ BUILD_TYPE ] }
     cap_drop: [ ALL ]
     read_only: true
     restart: unless-stopped
